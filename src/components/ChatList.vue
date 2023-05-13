@@ -38,15 +38,17 @@ const emit = defineEmits(["new-message"]);
 const sendMessage = () => {
   if (newMessage.value.trim() !== "") {
     // Use handleNewMessage function to add the new message to the conversation
-    props.handleNewMessage(selectedConversationIndex.value, newMessage.value.trim());
+    props.handleNewMessage(
+      selectedConversationIndex.value,
+      newMessage.value.trim()
+    );
     newMessage.value = "";
   }
 };
-
 </script>
 <template>
   <div class="flex gap-2 text-black w-full m-4">
-    <div class="flex flex-col w-1/5 bg-indigo-100 rounded p-3">
+    <div class="flex flex-col w-1/3 bg-indigo-100 rounded p-3">
       <!-- Add a search bar to filter conversations -->
       <input
         v-model="search"

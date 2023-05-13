@@ -1,6 +1,6 @@
 <script setup>
 import ChatList from "@/components/ChatList.vue";
-import {ref} from "vue";
+import { ref } from "vue";
 
 const conversations = ref([]);
 
@@ -9,15 +9,42 @@ const addConversation = (title, messages = [], username) => {
 };
 
 
-const startNewConversation = (username) => {
-  addConversation(`Chat with ${username}`, [], username);
+const startNewConversation = () => {
+  fetch('https://randomuser.me/api/?format=json')
+    .then(response => response.json())
+    .then(data => {
+      // Extract the user's name from the response
+      const user = data.results[0];
+      const username = user.login.username;
+      
+      // Add the new conversation with the random user's name as the title
+      addConversation(`Chat with ${username}`, [], username);
+    })
+    .catch(error => {
+      console.error('Error fetching user:', error);
+    });
 };
 
-
+fetch('https://randomuser.me/api/')
+  .then(response => response.json())
+  .then(data => {
+    // Extract the user information from the response
+    const user = data.results[0];
+    
+    // Access the user's name and other details
+    const firstName = user.name.first;
+    const lastName = user.name.last;
+    const username = user.login.username;
+    
+    // You can use the extracted user details here if needed
+  })
+  .catch(error => {
+    console.error('Error fetching user:', error);
+  });
 const addMessageToConversation = (conversationIndex, message) => {
   const conversation = conversations.value[conversationIndex];
-  
-  if(conversation) {
+
+  if (conversation) {
     conversation.messages.push(message);
   } else {
     console.error(`No conversation found at index ${conversationIndex}`);
@@ -38,7 +65,6 @@ const handleNewMessage = (conversationIndex, text) => {
   }
 };
 
-
 // Add initial conversations
 startNewConversation("Abdulazeez");
 addMessageToConversation(0, {
@@ -54,10 +80,19 @@ addMessageToConversation(0, {
 });
 
 startNewConversation("Ahmed");
+
 addMessageToConversation(1, {
   outgoing: true,
   text: "Hi Ahmed!",
   username: "hdrm147",
+});
+
+startNewConversation("Omer");
+
+addMessageToConversation(2, {
+  outgoing: true,
+  text: "Hi Omer!",
+  username: "e7pm",
 });
 
 // ... and so on for other conversations
@@ -65,6 +100,9 @@ addMessageToConversation(1, {
 
 <template>
   <div class="container flex justify-center">
-    <ChatList :conversations="conversations" :handleNewMessage="handleNewMessage"></ChatList>
+    <ChatList
+      :conversations="conversations"
+      :handleNewMessage="handleNewMessage"
+    ></ChatList>
   </div>
 </template>
