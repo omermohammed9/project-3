@@ -8,6 +8,10 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+  handleNewMessage: {
+    type: Function,
+    required: true,
+  },
 });
 
 // Initialize index of the selected conversation
@@ -24,24 +28,22 @@ const newMessage = ref("");
 
 // Filtered conversations based on search input
 const filteredConversations = computed(() => {
-  return props.conversations.filter(conversation =>
+  return props.conversations.filter((conversation) =>
     conversation.title.toLowerCase().includes(search.value.toLowerCase())
   );
 });
 
 // Emit function for sending a new message
-const emit = defineEmits(['new-message']);
+const emit = defineEmits(["new-message"]);
 const sendMessage = () => {
   if (newMessage.value.trim() !== "") {
-    // Emit a new-message event with the new message
-    emit('new-message', newMessage.value.trim());
+    // Use handleNewMessage function to add the new message to the conversation
+    props.handleNewMessage(selectedConversationIndex.value, newMessage.value.trim());
     newMessage.value = "";
   }
 };
 
 </script>
-
-
 <template>
   <div class="flex gap-2 text-black w-full m-4">
     <div class="flex flex-col w-1/5 bg-indigo-100 rounded p-3">
@@ -61,7 +63,10 @@ const sendMessage = () => {
       </div>
     </div>
     <div class="flex flex-col w-4/5 bg-indigo-200 rounded h-[90vh]">
-      <div v-if="currentConversation != null" class="flex flex-col w-full px-2 h-full overflow-y-auto">
+      <div
+        v-if="currentConversation != null"
+        class="flex flex-col w-full px-2 h-full overflow-y-auto"
+      >
         <chat-bubble
           v-for="(message, index) in currentConversation.messages"
           :key="index"

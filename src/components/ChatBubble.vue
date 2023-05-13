@@ -1,9 +1,17 @@
 <script setup>
-const props = defineProps(["message"]);
+// Define props for the message
+const props = defineProps({
+  message: {
+    type: Object,
+    required: true
+  },
+});
 </script>
 
 <template>
-    <div class="flex rounded my-2 px-2 py-4" :class="{'justify-end': message.outgoing,'bg-indigo-500':!message.outgoing,'bg-amber-400':message.outgoing}">
-        <p>{{ message.text }}</p>
-    </div>
+  <div v-if="message" class="p-2 m-1 rounded border-2 border-gray-200" :class="{ 'bg-green-100': message.outgoing, 'bg-blue-100': !message.outgoing }">
+    <p><strong>{{ message.username }}</strong></p>
+    <p>{{ message.text }}</p>
+  </div>
 </template>
+

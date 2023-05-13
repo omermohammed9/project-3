@@ -1,17 +1,18 @@
-
 <script setup>
 import ChatList from "@/components/ChatList.vue";
 import {ref} from "vue";
 
 const conversations = ref([]);
 
-const addConversation = (title, messages = []) => {
-  conversations.value.push({ title, messages });
+const addConversation = (title, messages = [], username) => {
+  conversations.value.push({ title, messages, username });
 };
 
+
 const startNewConversation = (username) => {
-  addConversation(`Chat with ${username}`);
+  addConversation(`Chat with ${username}`, [], username);
 };
+
 
 const addMessageToConversation = (conversationIndex, message) => {
   const conversation = conversations.value[conversationIndex];
@@ -22,6 +23,21 @@ const addMessageToConversation = (conversationIndex, message) => {
     console.error(`No conversation found at index ${conversationIndex}`);
   }
 };
+
+// Add the new function here
+const handleNewMessage = (conversationIndex, text) => {
+  const conversation = conversations.value[conversationIndex];
+  if (conversation) {
+    addMessageToConversation(conversationIndex, {
+      outgoing: true,
+      text: text,
+      username: conversation.username, // Use the username from the conversation
+    });
+  } else {
+    console.error(`No conversation found at index ${conversationIndex}`);
+  }
+};
+
 
 // Add initial conversations
 startNewConversation("Abdulazeez");
@@ -44,13 +60,11 @@ addMessageToConversation(1, {
   username: "hdrm147",
 });
 
+// ... and so on for other conversations
 </script>
 
-
-
 <template>
-  <div 
-        class="container flex justify-center">
-        <ChatList :conversations="conversations"></ChatList>
-        </div>
+  <div class="container flex justify-center">
+    <ChatList :conversations="conversations" :handleNewMessage="handleNewMessage"></ChatList>
+  </div>
 </template>
